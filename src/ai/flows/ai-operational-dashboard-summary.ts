@@ -69,7 +69,7 @@ Equipment Summary:
 - Decommissioned: {{{equipmentSummary.decommissioned}}}
 
 Stock Alerts (items below minimum stock):
-{{#if stockAlerts.length}}
+{{#if stockAlerts}}
 {{#each stockAlerts}}
 - SKU: {{{sku}}}, Description: {{{description}}}, Current Stock: {{{currentStock}}}, Minimum Stock: {{{minStock}}}
 {{/each}}
@@ -83,7 +83,7 @@ Work Order Summary:
 - Overdue: {{{workOrderSummary.overdue}}}
 
 Logistics Alerts (deliveries/pickups with warnings or critical issues):
-{{#if logisticsAlerts.length}}
+{{#if logisticsAlerts}}
 {{#each logisticsAlerts}}
 - Document ID: {{{documentId}}}, Type: {{{type}}}, Status: {{{status}}}, Description: {{{description}}}
 {{/each}}
