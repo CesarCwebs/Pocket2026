@@ -48,10 +48,6 @@ const AiOperationalDashboardSummaryOutputSchema = z.object({
 
 export type AiOperationalDashboardSummaryOutput = z.infer<typeof AiOperationalDashboardSummaryOutputSchema>;
 
-export async function getOperationalDashboardSummary(input: AiOperationalDashboardSummaryInput): Promise<AiOperationalDashboardSummaryOutput> {
-  return aiOperationalDashboardSummaryFlow(input);
-}
-
 const aiOperationalDashboardSummaryPrompt = ai.definePrompt({
   name: 'aiOperationalDashboardSummaryPrompt',
   input: { schema: AiOperationalDashboardSummaryInputSchema },
@@ -92,7 +88,7 @@ None
 {{/if}}
 
 General KPIs:
-- Total Inventory Value: $ {{{generalKpis.inventoryValue}}}
+- Total Inventory Value: \$ {{{generalKpis.inventoryValue}}}
 - Equipment Downtime Rate: {{{generalKpis.equipmentDowntimeRate}}}%
 - Active Orders: {{{generalKpis.activeOrders}}}
 
@@ -110,3 +106,7 @@ const aiOperationalDashboardSummaryFlow = ai.defineFlow(
     return output!;
   }
 );
+
+export async function getOperationalDashboardSummary(input: AiOperationalDashboardSummaryInput): Promise<AiOperationalDashboardSummaryOutput> {
+  return aiOperationalDashboardSummaryFlow(input);
+}
