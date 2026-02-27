@@ -1,4 +1,3 @@
-
 'use server';
 /**
  * @fileOverview A Genkit flow for generating a daily operational summary of critical KPIs and urgent alerts.
@@ -89,11 +88,11 @@ None
 {{/if}}
 
 KPIs:
-- Inventory Value: $ {{{generalKpis.inventoryValue}}}
+- Total Inventory Value: \$ {{{generalKpis.inventoryValue}}}
 - Downtime Rate: {{{generalKpis.equipmentDowntimeRate}}}%
 - Active Orders: {{{generalKpis.activeOrders}}}
 
-Provide a concise summary highlighting critical KPIs and urgent alerts. Start directly with the summary content.`,
+Please provide a summary highlighting critical operational KPIs and urgent alerts. Keep it concise and focus on what's most important for a manager to know at a glance. Start directly with the summary, without any introductory phrases.`,
 });
 
 const aiOperationalDashboardSummaryFlow = ai.defineFlow(

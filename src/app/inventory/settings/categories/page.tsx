@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from "react";
-import InventoryLayout from "../../../InventoryLayout";
+import InventoryLayout from "../../InventoryLayout";
 import { Plus, Trash2, X, Tag, FilePenLine, Loader2, ServerCrash } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { getCategories, createCategory, updateCategory, deleteCategory } from './actions';
@@ -83,8 +83,8 @@ export default function CategoriesSettingsPage() {
             const data = await getCategories();
             if (Array.isArray(data)) {
                 setCategories(data);
-            } else {
-                throw new Error(data.error || 'Error al cargar los datos.');
+            } else if (data && 'error' in data) {
+                throw new Error(data.error);
             }
         } catch (e: any) {
             setError(e.message);
