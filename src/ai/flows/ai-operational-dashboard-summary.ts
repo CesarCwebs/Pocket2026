@@ -2,6 +2,10 @@
 'use server';
 /**
  * @fileOverview A Genkit flow for generating a daily operational summary of critical KPIs and urgent alerts.
+ *
+ * - getOperationalDashboardSummary - A function that handles the generation of the summary.
+ * - AiOperationalDashboardSummaryInput - The input type for the summary flow.
+ * - AiOperationalDashboardSummaryOutput - The return type for the summary flow.
  */
 
 import { ai } from '@/ai/genkit';
@@ -45,21 +49,32 @@ const AiOperationalDashboardSummaryOutputSchema = z.object({
 
 export type AiOperationalDashboardSummaryOutput = z.infer<typeof AiOperationalDashboardSummaryOutputSchema>;
 
-const prompt = ai.definePrompt({
+const aiOperationalDashboardSummaryPrompt = ai.definePrompt({
   name: 'aiOperationalDashboardSummaryPrompt',
   input: { schema: AiOperationalDashboardSummaryInputSchema },
   output: { schema: AiOperationalDashboardSummaryOutputSchema },
-  prompt: `Generate a concise daily summary of the following ERP data. Focus on critical alerts and key performance metrics.
+  prompt: `You are an expert operations manager. Analyze the following ERP data and generate a concise daily operational summary.
 
-Data Overview:
+Focus on:
+1. Equipment Status: Mention availability and maintenance needs.
+2. Inventory/Stock Alerts: Highlight critical low-stock items.
+3. Work Orders: Summary of open and in-progress tasks.
+4. Logistics: Urgent delivery or pickup alerts.
+5. General KPIs: Inventory value and downtime rates.
+
+Data Summary:
 - Equipment: {{equipmentSummary.available}} available, {{equipmentSummary.inMaintenance}} in maintenance.
-- KPIs: Inventory value is {{generalKpis.inventoryValue}}, downtime rate is {{generalKpis.equipmentDowntimeRate}}%.
-- Orders: {{generalKpis.activeOrders}} active orders.
+- Work Orders: {{workOrderSummary.open}} open, {{workOrderSummary.inProgress}} in progress.
+- Active Orders: {{generalKpis.activeOrders}}
 
-Provide a high-level summary for management.`,
+General KPIs:
+- Total Inventory Value: \${{{generalKpis.inventoryValue}}}
+- Equipment Downtime Rate: {{{generalKpis.equipmentDowntimeRate}}}%
+
+Please provide a summary highlighting critical operational KPIs and urgent alerts. Keep it concise and focus on what's most important for a manager to know at a glance. Start directly with the summary, without any introductory phrases.`,
 });
 
 export async function getOperationalDashboardSummary(input: AiOperationalDashboardSummaryInput): Promise<AiOperationalDashboardSummaryOutput> {
-  const { output } = await prompt(input);
+  const { output } = await aiOperationalDashboardSummaryPrompt(input);
   return output!;
 }
