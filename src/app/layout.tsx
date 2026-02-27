@@ -1,8 +1,7 @@
 import type {Metadata} from 'next';
 import './globals.css';
-import { SidebarProvider } from "@/components/ui/sidebar"
-import { AppSidebar } from "@/components/app-sidebar"
-import { Toaster } from "@/components/ui/toaster"
+// Reemplazamos el Toaster de shadcn/ui por el de sonner
+import { Toaster } from 'sonner';
 
 export const metadata: Metadata = {
   title: 'NexusFlow ERP',
@@ -22,15 +21,9 @@ export default function RootLayout({
         <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
       </head>
       <body className="font-body antialiased bg-background">
-        <SidebarProvider defaultOpen={true}>
-          <div className="flex min-h-screen w-full">
-            <AppSidebar />
-            <main className="flex-1 overflow-auto p-6 lg:p-10">
-              {children}
-            </main>
-          </div>
-        </SidebarProvider>
-        <Toaster />
+        {children}
+        {/* Este Toaster ahora es el de 'sonner', y lo configuramos para que aparezca en la esquina superior derecha */}
+        <Toaster position="top-right" richColors />
       </body>
     </html>
   );
