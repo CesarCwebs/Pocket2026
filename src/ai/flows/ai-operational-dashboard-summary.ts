@@ -68,10 +68,10 @@ Data Summary:
 - Active Orders: {{generalKpis.activeOrders}}
 
 General KPIs:
-- Total Inventory Value: \${{{generalKpis.inventoryValue}}}
+- Total Inventory Value (USD): {{{generalKpis.inventoryValue}}}
 - Equipment Downtime Rate: {{{generalKpis.equipmentDowntimeRate}}}%
 
-Please provide a summary highlighting critical operational KPIs and urgent alerts. Keep it concise and focus on what's most important for a manager to know at a glance. Start directly with the summary, without any introductory phrases.`,
+Please provide a summary highlighting critical operational KPIs and urgent alerts. Keep it concise and focus on what is most important for a manager to know at a glance. Start directly with the summary, without any introductory phrases.`,
 });
 
 export async function getOperationalDashboardSummary(input: AiOperationalDashboardSummaryInput): Promise<AiOperationalDashboardSummaryOutput> {
