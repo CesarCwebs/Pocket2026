@@ -1,0 +1,22 @@
+# **App Name**: NexusFlow ERP
+
+## Core Features:
+
+- Hub: Operational Dashboard & Module Selector: Centralized post-login screen displaying key operational KPIs (equipment status, stock alerts, work orders) and module cards, dynamically filtered by global feature flags and user permissions, with search, sorting, and usage tracking.
+- Global Feature Flags Management: System to globally enable/disable application modules, controlling visibility in the Hub and access via routes. Disabled modules are inaccessible system-wide and return appropriate error codes.
+- Enterprise Role-Based Access Control (RBAC): Granular permission system (read, create, update, delete, export, approve, admin) assigned to roles, inherited by users, with optional per-user overrides. Includes middleware for server-side route protection and an admin UI for managing roles and permission matrices.
+- Audit & Activity Log System: Immutable logging of all significant data mutations (create, update, delete), capturing userId, module, entity, entityId, action, timestamp, and value changes (previous/new), viewable, filterable, and exportable from an admin panel for full traceability.
+- Equipment Catalog Management: Comprehensive CRUD for equipment assets including brand, model, serial, capacity, voltage, hour meter, status tracking (available, rented, maintenance, decommissioned), location, photo/document uploads, and integration with maintenance and logistics history, with status transition validation and dependency checks.
+- Inventory & Material Management: Manages material master data (SKU, description, unit, cost, stock, categories, supplier, min stock, serialization/lot tracking), supports multi-warehouse structures, and includes a detailed, immutable Kardex ledger for all stock movements (IN, OUT, ADJUSTMENT), with a weighted average costing engine and a document workflow for incoming receipts.
+- Maintenance Work Order Management: System for creating, scheduling, and tracking preventive and corrective work orders, integrating with inventory for spare parts, tracking labor, managing evidence uploads, and following a defined status workflow (Draft, Open, In Progress, Closed, Archived), with KPIs for backlog and upcoming tasks.
+- Logistics Operations (Deliveries & Pickups): Manages delivery and pickup documents, including customer and address details, assigned personnel, equipment condition checklists (OK/Warning/Critical), accessory verification, photo evidence, digital signature capture, and comprehensive status workflow tracking.
+- System-Level Analytics Dashboard: Provides real-time aggregated metrics and operational insights across the ERP, including inventory value, low stock alerts, equipment downtime rate, active orders, and performance indicators for delivery and maintenance efficiency.
+- AI-Driven Optimization Engine: An AI tool providing rule-based predictive alerts for maintenance frequency, usage thresholds, and failure patterns in Phase 1, designed with a clear separation of data collection and intelligence layers to evolve into ML-based predictive maintenance recommendations in later phases.
+
+## Style Guidelines:
+
+- Primary color: Clear blue-violet (#267FDE) for interactive elements. Background: Subtle, clean desaturated variant (#EEF3F8). Accent: Crisp cyan (#0A8EBB) for calls to action and highlights, contributing to a tech-savvy and approachable feel.
+- The primary font for both headlines and body text is 'Inter', chosen for its modern, neutral, and highly legible characteristics, ensuring excellent readability across data-dense screens and aligning with a premium SaaS aesthetic.
+- Icons will exclusively utilize the 'lucide-react' library, ensuring a consistent, clean, and modern line-icon aesthetic throughout the application, supporting a minimalist yet functional visual design.
+- The layout adheres to a premium, clean, and responsive design, emphasizing clear grids, card-based presentations, and strategic use of whitespace. 'shadcn/ui' components form the foundation for consistent and accessible design patterns, avoiding excessive visual noise.
+- Subtle and purposeful animations will be implemented using 'framer-motion'. These animations are minimal, designed to enhance user feedback and transitions between states or views without distraction, ensuring a fluid and sophisticated user experience.
