@@ -1,3 +1,4 @@
+
 'use server';
 /**
  * @fileOverview A Genkit flow for generating a daily operational summary of critical KPIs and urgent alerts.
@@ -57,42 +58,42 @@ Your goal is to provide a concise overview of critical KPIs and urgent alerts fr
 
 Focus on actionable insights and highlight any items that require immediate attention.
 
-Here is the operational data:
+Operational Data:
 
-Equipment Summary:
+Equipment:
 - Available: {{{equipmentSummary.available}}}
 - In Maintenance: {{{equipmentSummary.inMaintenance}}}
 - Decommissioned: {{{equipmentSummary.decommissioned}}}
 
-Stock Alerts (items below minimum stock):
+Stock Alerts:
 {{#if stockAlerts}}
 {{#each stockAlerts}}
-- SKU: {{{sku}}}, Description: {{{description}}}, Current Stock: {{{currentStock}}}, Minimum Stock: {{{minStock}}}
+- SKU: {{{sku}}}, Description: {{{description}}}, Stock: {{{currentStock}}}/{{{minStock}}}
 {{/each}}
 {{else}}
 None
 {{/if}}
 
-Work Order Summary:
+Work Orders:
 - Open: {{{workOrderSummary.open}}}
 - In Progress: {{{workOrderSummary.inProgress}}}
 - Overdue: {{{workOrderSummary.overdue}}}
 
-Logistics Alerts (deliveries/pickups with warnings or critical issues):
+Logistics:
 {{#if logisticsAlerts}}
 {{#each logisticsAlerts}}
-- Document ID: {{{documentId}}}, Type: {{{type}}}, Status: {{{status}}}, Description: {{{description}}}
+- ID: {{{documentId}}}, Type: {{{type}}}, Status: {{{status}}}, Desc: {{{description}}}
 {{/each}}
 {{else}}
 None
 {{/if}}
 
-General KPIs:
-- Total Inventory Value: \$ {{{generalKpis.inventoryValue}}}
-- Equipment Downtime Rate: {{{generalKpis.equipmentDowntimeRate}}}%
+KPIs:
+- Inventory Value: $ {{{generalKpis.inventoryValue}}}
+- Downtime Rate: {{{generalKpis.equipmentDowntimeRate}}}%
 - Active Orders: {{{generalKpis.activeOrders}}}
 
-Please provide a summary highlighting critical operational KPIs and urgent alerts. Keep it concise and focus on what's most important for a manager to know at a glance. Start directly with the summary, without any introductory phrases like "Here is your summary." or "Daily Operational Summary:".`,
+Provide a concise summary highlighting critical KPIs and urgent alerts. Start directly with the summary content.`,
 });
 
 const aiOperationalDashboardSummaryFlow = ai.defineFlow(

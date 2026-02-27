@@ -5,52 +5,79 @@ import { admin } from "@/lib/firebase-admin";
 import { z } from "zod";
 import { revalidatePath } from "next/cache";
 
+const collectionName = "inventory_locations";
+
 const locationSchema = z.object({
-    name: z.string().min(1, "El nombre es requerido"),
-    description: z.string().optional(),
+    almacen: z.string().min(1, "El almacén es obligatorio."),
+    zona: z.string().min(1, "La zona es obligatoria."),
+    pasillo: z.string().min(1, "El pasillo es obligatorio."),
+    estanteria: z.string().min(1, "La estantería es obligatoria."),
+    nivel: z.string().min(1, "El nivel es obligatorio."),
+    posicion: z.string().min(1, "La posición es obligatoria."),
+    tipoUbicacion: z.string().min(1, "El tipo de ubicación es obligatorio."),
+    estado: z.enum(['Activo', 'Bloqueado']),
 });
 
-// Función para obtener los localizadores
+// Obtener todos los localizadores
 export async function getLocations() {
     try {
-        const snapshot = await admin.firestore().collection("locations").get();
+        const db = admin.firestore();
+        const snapshot = await db.collection(collectionName).get();
         if (snapshot.empty) {
             return [];
         }
-        const locations = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-        return locations;
+        return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
     } catch (error: any) {
-        console.error("--- ERROR DETALLADO en getLocations ---", error);
+        console.error("Error en getLocations:", error);
         return { error: `No se pudieron obtener los localizadores: ${error.message}` };
     }
 }
 
-// Función para crear o actualizar un localizador
-export async function createOrUpdateLocation(id: string | null, data: any) {
+// Crear un localizador
+export async function createLocation(data: any) {
     try {
+        const db = admin.firestore();
         const validatedData = locationSchema.parse(data);
-        if (id) {
-            await admin.firestore().collection("locations").doc(id).update(validatedData);
-        } else {
-            await admin.firestore().collection("locations").add(validatedData);
-        }
+        const id = data.id || `${validatedData.almacen}-${validatedData.zona}-${validatedData.pasillo}-${validatedData.estanteria}-${validatedData.nivel}-${validatedData.posicion}`;
+        
+        await db.collection(collectionName).doc(id).set({
+            ...validatedData,
+            createdAt: new Date().toISOString()
+        });
+        
         revalidatePath("/inventory/settings/locations");
-        return { success: true };
-    } catch (error) {
-        if (error instanceof z.ZodError) {
-            return { error: error.errors.map(e => e.message).join(", ") };
-        }
-        return { error: "Error al guardar el localizador" };
+        return { success: true, message: "Localizador creado con éxito." };
+    } catch (error: any) {
+        console.error("Error en createLocation:", error);
+        return { success: false, message: error.message || "Error al crear el localizador." };
     }
 }
 
-// Función para eliminar un localizador
+// Actualizar un localizador
+export async function updateLocation(id: string, data: any) {
+    try {
+        const db = admin.firestore();
+        const validatedData = locationSchema.parse(data);
+        
+        await db.collection(collectionName).doc(id).update(validatedData);
+        
+        revalidatePath("/inventory/settings/locations");
+        return { success: true, message: "Localizador actualizado con éxito." };
+    } catch (error: any) {
+        console.error("Error en updateLocation:", error);
+        return { success: false, message: error.message || "Error al actualizar el localizador." };
+    }
+}
+
+// Eliminar un localizador
 export async function deleteLocation(id: string) {
     try {
-        await admin.firestore().collection("locations").doc(id).delete();
+        const db = admin.firestore();
+        await db.collection(collectionName).doc(id).delete();
         revalidatePath("/inventory/settings/locations");
-        return { success: true };
-    } catch (error) {
-        return { error: "Error al eliminar el localizador" };
+        return { success: true, message: "Localizador eliminado con éxito." };
+    } catch (error: any) {
+        console.error("Error en deleteLocation:", error);
+        return { success: false, message: "Error al eliminar el localizador." };
     }
 }
