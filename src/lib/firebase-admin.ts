@@ -5,35 +5,19 @@ let db: admin.firestore.Firestore;
 
 function initialize() {
     try {
-        const credentialsBase64 = process.env.FIREBASE_CREDENTIALS_BASE64;
-        let serviceAccount: any;
-
-        if (credentialsBase64) {
-            // Preferred method: Use Base64 encoded credentials
-            const credentialsJson = Buffer.from(credentialsBase64, 'base64').toString('utf-8');
-            serviceAccount = JSON.parse(credentialsJson);
-            
-            // The private key from the parsed JSON needs its literal \n characters replaced with actual newlines.
-            if (serviceAccount.private_key) {
-                serviceAccount.private_key = serviceAccount.private_key.replace(/\\n/g, '\n');
-            }
-
-        } else {
-            // Fallback method for older setups
-            throw new Error('FIREBASE_CREDENTIALS_BASE64 is not set. Please use the Base64 method for credentials.');
-        }
-
+        // When deployed to a Google Cloud environment (like App Hosting),
+        // the SDK automatically uses the project's default service account.
+        // No explicit credential configuration is needed.
         if (admin.apps.length === 0) {
-            admin.initializeApp({
-                credential: admin.credential.cert(serviceAccount),
-            });
+            admin.initializeApp();
         }
         
         db = admin.firestore();
 
     } catch (error: any) {
         console.error('FIREBASE_ADMIN_INIT_ERROR:', error);
-        throw new Error(`Firebase Admin initialization failed. The credential data is likely corrupted. Original error: ${error.message}`);
+        // Provide a more helpful error message for this context.
+        throw new Error(`Firebase Admin initialization failed. Ensure the App Hosting backend has the correct IAM permissions. Original error: ${error.message}`);
     }
 }
 
