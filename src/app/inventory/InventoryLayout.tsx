@@ -1,3 +1,4 @@
+
 'use client';
 
 import React from 'react';
@@ -11,9 +12,11 @@ import {
   AlertTriangle,
   Download,
   ArrowLeft,
-  Activity,
-  SlidersHorizontal, // Icono para Ajustes
+  SlidersHorizontal,
 } from 'lucide-react';
+import dynamic from 'next/dynamic';
+
+const NodeStatus = dynamic(() => import('./NodeStatus'), { ssr: false });
 
 const MENU_ITEMS = [
   { icon: LayoutGrid, label: 'Dashboard', path: '/inventory' },
@@ -24,7 +27,6 @@ const MENU_ITEMS = [
   { icon: Download, label: 'Reportes', path: '/inventory' },
 ];
 
-// Ruta corregida para apuntar a la página principal de Ajustes
 const SETTINGS_ITEM = { icon: SlidersHorizontal, label: 'Ajustes', path: '/inventory/settings' };
 
 export default function InventoryLayout({ children, activeTab, setActiveTab }: { children: React.ReactNode, activeTab: string, setActiveTab: (tab: string) => void }) {
@@ -39,12 +41,10 @@ export default function InventoryLayout({ children, activeTab, setActiveTab }: {
   };
 
   const isMainTabActive = (itemLabel: string) => {
-    // Si la pestaña activa es la del item Y no estamos en la sección de ajustes
     return activeTab === itemLabel && !pathname.startsWith('/inventory/settings');
   };
 
   const isSettingsTabActive = () => {
-    // La pestaña de ajustes está activa si su label es el activo O si la ruta actual empieza con /inventory/settings
     return activeTab === 'Ajustes' || pathname.startsWith('/inventory/settings');
   };
 
@@ -103,19 +103,7 @@ export default function InventoryLayout({ children, activeTab, setActiveTab }: {
             </button>
           </nav>
         </div>
-
-        <div className="absolute bottom-8 left-6 right-6">
-           <div className="p-4 bg-zinc-50 dark:bg-zinc-800/50 rounded-2xl border border-zinc-100 dark:border-zinc-800">
-              <div className="flex items-center gap-2 mb-3 text-xs font-bold uppercase tracking-widest text-zinc-400">
-                <Activity className="w-3 h-3 text-blue-500" />
-                <span>Estado Nodo</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <div className="w-2 h-2 bg-blue-500 rounded-full animate-pulse" />
-                <span className="text-[10px] font-bold text-zinc-500">Sincronizado v2.6</span>
-              </div>
-           </div>
-        </div>
+        <NodeStatus />
       </aside>
 
       <main className="lg:pl-64 min-h-screen flex flex-col">
