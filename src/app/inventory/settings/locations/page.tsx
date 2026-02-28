@@ -2,6 +2,8 @@
 import { getLocations } from "./actions";
 import LocationsClientPage from "./locations-client-page";
 
+// Este es un COMPONENTE DE SERVIDOR. Es async.
+// Su única responsabilidad es obtener los datos.
 export default async function LocationsPage() {
     const locationsResult = await getLocations();
 
@@ -10,11 +12,6 @@ export default async function LocationsPage() {
         return <div>Error: {locationsResult.error}</div>;
     }
 
-    return (
-        <div className="p-8">
-            <h1 className="text-2xl font-bold mb-4">Gestión de Localizadores</h1>
-            <p className="mb-6">Crea, edita y gestiona los localizadores de tu inventario.</p>
-            <LocationsClientPage initialLocations={locationsResult} />
-        </div>
-    );
+    // Pasa los datos obtenidos al componente de cliente.
+    return <LocationsClientPage initialLocations={locationsResult} />;
 }

@@ -1,6 +1,7 @@
+
 'use server';
 
-import { admin } from '@/lib/firebase-admin';
+import { getFirestoreInstance } from '@/lib/firebase-admin';
 import { revalidatePath } from 'next/cache';
 
 const collectionName = 'inventory_units';
@@ -8,7 +9,7 @@ const collectionName = 'inventory_units';
 // --- Obtener todas las unidades de medida ---
 export async function getUnits() {
     try {
-        const db = admin.firestore();
+        const db = getFirestoreInstance();
         const snapshot = await db.collection(collectionName).orderBy('createdAt', 'desc').get();
         if (snapshot.empty) {
             return [];
@@ -23,7 +24,7 @@ export async function getUnits() {
 // --- Crear una nueva unidad de medida ---
 export async function createUnit(data: { id: string, name: string, description: string }) {
     try {
-        const db = admin.firestore();
+        const db = getFirestoreInstance();
         const { id, ...rest } = data;
         await db.collection(collectionName).doc(id).set({
             ...rest,
@@ -40,7 +41,7 @@ export async function createUnit(data: { id: string, name: string, description: 
 // --- Actualizar una unidad de medida existente ---
 export async function updateUnit(id: string, data: { name: string, description: string }) {
     try {
-        const db = admin.firestore();
+        const db = getFirestoreInstance();
         await db.collection(collectionName).doc(id).update(data);
         revalidatePath('/inventory/settings/units');
         return { success: true, message: `Unidad ${id} actualizada.` };
@@ -53,7 +54,7 @@ export async function updateUnit(id: string, data: { name: string, description: 
 // --- Eliminar una unidad de medida ---
 export async function deleteUnit(id: string) {
     try {
-        const db = admin.firestore();
+        const db = getFirestoreInstance();
         await db.collection(collectionName).doc(id).delete();
         revalidatePath('/inventory/settings/units');
         return { success: true, message: `Unidad ${id} eliminada.` };

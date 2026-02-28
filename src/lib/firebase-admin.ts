@@ -1,42 +1,49 @@
+
 import admin from 'firebase-admin';
 
-/**
- * Singleton to initialize Firebase Admin.
- * Does not throw at top level to prevent Next.js server crash loop if ENVs are missing.
- */
-function initializeFirebaseAdmin() {
-  if (admin.apps.length > 0) {
-    return admin.app();
-  }
+let db: admin.firestore.Firestore;
 
-  const projectId = process.env.FIREBASE_PROJECT_ID;
-  const clientEmail = process.env.FIREBASE_CLIENT_EMAIL;
-  const privateKey = process.env.FIREBASE_PRIVATE_KEY?.replace(/\\n/g, '\n');
+function initialize() {
+    try {
+        const credentialsBase64 = process.env.FIREBASE_CREDENTIALS_BASE64;
+        let serviceAccount: any;
 
-  if (!projectId || !clientEmail || !privateKey) {
-    console.warn('Firebase Admin credentials missing. Firestore operations will fail.');
-    return null;
-  }
+        if (credentialsBase64) {
+            // Preferred method: Use Base64 encoded credentials
+            const credentialsJson = Buffer.from(credentialsBase64, 'base64').toString('utf-8');
+            serviceAccount = JSON.parse(credentialsJson);
+            
+            // The private key from the parsed JSON needs its literal \n characters replaced with actual newlines.
+            if (serviceAccount.private_key) {
+                serviceAccount.private_key = serviceAccount.private_key.replace(/\\n/g, '\n');
+            }
 
-  try {
-    return admin.initializeApp({
-      credential: admin.credential.cert({
-        projectId,
-        clientEmail,
-        privateKey,
-      }),
-    });
-  } catch (error) {
-    console.error('Error initializing Firebase Admin:', error);
-    return null;
-  }
+        } else {
+            // Fallback method for older setups
+            throw new Error('FIREBASE_CREDENTIALS_BASE64 is not set. Please use the Base64 method for credentials.');
+        }
+
+        if (admin.apps.length === 0) {
+            admin.initializeApp({
+                credential: admin.credential.cert(serviceAccount),
+            });
+        }
+        
+        db = admin.firestore();
+
+    } catch (error: any) {
+        console.error('FIREBASE_ADMIN_INIT_ERROR:', error);
+        throw new Error(`Firebase Admin initialization failed. The credential data is likely corrupted. Original error: ${error.message}`);
+    }
 }
 
-const app = initializeFirebaseAdmin();
+initialize();
 
-export const db = app ? admin.firestore() : null;
+export function getFirestoreInstance(): admin.firestore.Firestore {
+    if (!db) {
+        throw new Error('Firestore instance is not available. Initialization may have failed.');
+    }
+    return db;
+}
+
 export { admin };
-
-export function ensureFirebaseAdminIsInitialized() {
-  return !!admin.apps.length;
-}

@@ -24,6 +24,7 @@ const MENU_ITEMS = [
   { icon: Download, label: 'Reportes', path: '/inventory' },
 ];
 
+// Ruta corregida para apuntar a la página principal de Ajustes
 const SETTINGS_ITEM = { icon: SlidersHorizontal, label: 'Ajustes', path: '/inventory/settings' };
 
 export default function InventoryLayout({ children, activeTab, setActiveTab }: { children: React.ReactNode, activeTab: string, setActiveTab: (tab: string) => void }) {
@@ -35,6 +36,16 @@ export default function InventoryLayout({ children, activeTab, setActiveTab }: {
     if (pathname !== item.path) {
       router.push(item.path);
     }
+  };
+
+  const isMainTabActive = (itemLabel: string) => {
+    // Si la pestaña activa es la del item Y no estamos en la sección de ajustes
+    return activeTab === itemLabel && !pathname.startsWith('/inventory/settings');
+  };
+
+  const isSettingsTabActive = () => {
+    // La pestaña de ajustes está activa si su label es el activo O si la ruta actual empieza con /inventory/settings
+    return activeTab === 'Ajustes' || pathname.startsWith('/inventory/settings');
   };
 
   return (
@@ -65,7 +76,7 @@ export default function InventoryLayout({ children, activeTab, setActiveTab }: {
                 key={item.label}
                 onClick={() => handleNav(item)}
                 className={`w-full flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-bold transition-all ${ 
-                  activeTab === item.label && pathname.startsWith('/inventory') && !pathname.startsWith('/inventory/settings')
+                  isMainTabActive(item.label)
                     ? 'bg-blue-500 text-white shadow-lg shadow-blue-500/20'
                     : 'text-zinc-500 hover:bg-zinc-100 dark:hover:bg-zinc-800 hover:text-zinc-900 dark:hover:text-white'
                 }`}
@@ -82,7 +93,7 @@ export default function InventoryLayout({ children, activeTab, setActiveTab }: {
             <button
               onClick={() => handleNav(SETTINGS_ITEM)}
               className={`w-full flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-bold transition-all ${ 
-                  pathname.startsWith('/inventory/settings')
+                  isSettingsTabActive()
                   ? 'bg-blue-500 text-white shadow-lg shadow-blue-500/20'
                   : 'text-zinc-500 hover:bg-zinc-100 dark:hover:bg-zinc-800 hover:text-zinc-900 dark:hover:text-white'
               }`}
